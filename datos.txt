@@ -1,51 +1,51 @@
 Lote 1
-	1. Carlos
-	2*7
+	1. Juan
+	8/9
 	TME: 8
 
-	2. Carlos
-	7-4
-	TME: 12
+	2. Juan
+	4+5
+	TME: 4
 
-	3. José
-	9-7
-	TME: 8
-
-	4. Carolina
-	6/3
-	TME: 9
-
-	5. Carolina
-	2*3
-	TME: 11
-
-Lote 2
-	6. José
-	1-3
-	TME: 11
-
-	7. José
-	7*4
-	TME: 5
-
-	8. Carolina
-	6-5
+	3. Juan
+	4-4
 	TME: 10
 
+	4. José
+	7/9
+	TME: 9
+
+	5. Juan
+	4*4
+	TME: 7
+
+Lote 2
+	6. Juan
+	9/1
+	TME: 8
+
+	7. Carolina
+	2-1
+	TME: 9
+
+	8. José
+	8/6
+	TME: 7
+
 	9. Carolina
-	8+4
-	TME: 11
+	6/5
+	TME: 8
 
 	10. Carlos
-	2-5
+	2*1
 	TME: 13
 
 Lote 3
-	11. Carlos
-	5+7
-	TME: 5
+	11. Carolina
+	7/7
+	TME: 9
 
 	12. Carolina
-	3*2
-	TME: 9
+	3-8
+	TME: 7
 

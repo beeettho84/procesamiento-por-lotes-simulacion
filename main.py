@@ -22,6 +22,8 @@ class proceso: #clase para almacenar los datos de los procesos
     n2 = 0
     tiempo = 0
     nlot = 0
+    status = 0
+    texe = 0
 
     def set(self, np, pr, num1, oper, num2, times, nlote): #setter de la clase
         self.nprog = np
@@ -39,15 +41,32 @@ class proceso: #clase para almacenar los datos de los procesos
 
     def toString(self): #metodo para devolver una cadena con el formato requerido, utilizada para escribir en
         # datos.txt
-        s='\t'+str(self.nprog)+'. '+self.prog+'\n'+'\t'+str(self.n1)+str(self.op)+str(self.n2)+'\n'+'\tTME: ' \
-          + str(self.tiempo) + '\n\n'
+        s=''
+        if self.status == 0:
+            s='\t'+str(self.nprog)+'. '+self.prog+'\n'+'\t'+str(self.n1)+str(self.op)+str(self.n2)+'\n'+'\tTME: ' \
+              + str(self.tiempo) + '\n\n'
+        elif self.status == 2:
+            s = '\t' + str(self.nprog) + '. ' + self.prog + '\n' + '\t' + str(self.n1) + str(self.op) + str(
+                self.n2) + '\n' + '\tTME: ' \
+                + str(self.tiempo) + '\n\tejecutado por'+ str(self.texe) +'\n\n'
         return s
 
     def toStringSolved(self): #metodo para devolver una cadena con el formato requerido, utilizada para
         # escribir en Resultados.txt
-        s = '\t' + str(self.nprog) + '. ' + self.prog + '\n' + '\t' + str(self.n1) + str(self.op) + \
+        s = ''
+        if self.status == 0:
+            s = '\t' + str(self.nprog) + '. ' + self.prog + '\n' + '\t' + str(self.n1) + str(self.op) + \
             str(self.n2) +'='+str(self.solve()) + '\n\n'
+        elif self.status == 1:
+            s = '\t' + str(self.nprog) + '. ' + self.prog + '\n' + '\t' + str(self.n1) + str(self.op) + \
+                str(self.n2) + '= E'+ '\n\n'
         return s
+
+    def error(self):
+        self.status = 1 #cambia el status a error
+        self.tiempo = 0 #le quita el tiempo restante para que termine
+    def interrumpir(self):
+        self.status = 2
 
 def generar(n): #funcion para la generacion de procesos
     global programas, op, hora_inicio,pendientes  # variable globales que modifica la función
@@ -90,7 +109,7 @@ def refrescar_tiempo_transcurrido(): #funcion central, para la actualizacion del
         variable_hora_actual.set('Reloj General: '+str(obtener_tiempo_transcurrido())) #almacena el valor de los
         # segundos transcurridos
         lblRelojGeneral.config(text=variable_hora_actual.get()) #actualizacion del cronometro
-        nLotes = int(((pendientes-1) / 5) + 0.2) #definimos la catidad de lotes pendientes en cada ejecucion basados
+        nLotes = int((pendientes / 5) + 0.2) #definimos la catidad de lotes pendientes en cada ejecucion basados
         # en los programas en espera
         lotesP = '# de Lotes pendientes: '+ str(nLotes) #imprimimos los lotes pendientes
         print(lotesP) #impresion de monitoreo
@@ -101,11 +120,14 @@ def refrescar_tiempo_transcurrido(): #funcion central, para la actualizacion del
                     txtEjecucion.delete(1.0,END) #vaciamos la caja de texto
                     txtEjecucion.insert(1.0,lista[0].toString()) #la llenamos con el valor del proceso
                     lista[0].tiempo-=1 #disminuimos el TME
+                    lista[0].texe+=1 #contamos su tiempo ejecutado
                 elif lista[0].tiempo == 0: #si ya paso el TME
                     txtEjecucion.delete(1.0, END) #vaciamos la caja del programa en ejecucion
                     if len(lista) >=2: #si hay un programa en espera
                         txtEjecucion.insert(1.0, lista[1].toString()) #lo ponemos en la caja de ejecucion
+                        lista[1].status=0
                         lista[1].tiempo -= 1 #reducimos su primer segundo
+                        lista[0].texe += 1  # contamos su tiempo ejecutado
                     if lista[0].nprog%5==1:
                         s = 'Lote '+ str(lista[0].nlot) +'\n'
                         txtTerminados.insert(END,s)
@@ -132,6 +154,21 @@ def refrescar_tiempo_transcurrido(): #funcion central, para la actualizacion del
     root.after(INTERVALO_REFRESCO, refrescar_tiempo_transcurrido) #esta funcion se cicla para funcionar de nuevo
     # cada tiempo determinado, en este caso el valor de la variable intervalo
 
+def interrumpir(): #funcion para la creacion de interrupciones
+    global lista # tomamos la lista de procesos
+    lista[0].interrumpir()
+    p = lista[0] # copiamos el proceso en ejecucion en un proceso nuevo a manera de buffer
+    n = lista[0].nlot*5 - lista[0].nprog #calculamos los elementos restantes del lote para poder modificarlo
+    print(n) #impresion de control
+    for i in range(n+1): #ciclo para la modificacion del lote
+        if i<n: #para todos los procesos menos el ultimo del lote
+            lista[i] = lista[i+1] #se intercambia el proceso de la posicion por el siguiente
+        elif i == n: #si es el final del lote
+            lista[i] = p #ponemos el proceso interrumpido en la posicion final
+
+def error():
+    global lista #tomamos la litsa de procesos
+    lista[0].error() #llamamos el metodo de error de la clase
 
 root= Tk()
 root.title("Procesamineto pot lotes")#titulamos la ventana
@@ -151,6 +188,8 @@ lblTerminados = Label(root, text="TERMINADOS")
 txtTerminados= Text(root, width=25, height=20)
 lblNLotes = Label(root, text="# de Lotes pendientes:")
 btnResultados = Button(root, text="OBTENER RESULTADOS", command= lambda: obtener_resultados())
+btnInterrumpir = Button(root, text="Interrumpir", command= lambda: interrumpir())
+btnError = Button(root, text="Error", width=10, command= lambda: error())
 
 #colocacion de componentes
 lblNProc.place(anchor=N, x=50, y=10)
@@ -165,6 +204,8 @@ lblTerminados.place(anchor=N, x=700, y=50)
 txtTerminados.place(anchor=N, x=700, y=70)
 lblNLotes.place(anchor=N, x=120, y=400)
 btnResultados.place(anchor=N, x=700, y=410)
+btnInterrumpir.place(anchor=N, x=360,y=290)
+btnError.place(anchor=N, x=475, y=290)
 app = Frame() #declaramos un frame para el funcionamiento del cronometro
 refrescar_tiempo_transcurrido() #esta linea activara el cronometro siempre y cuando op sea igual a 1
 app.pack() #esta linea nos permitira actualizar la interfaz para visualizar los cambios del cronometro

@@ -1,40 +1,40 @@
 Lote 1
-	1. Carlos
-	2*7=14
+	1. Juan
+	8/9=0.8888888888888888
 
-	2. Carlos
-	7-4=3
+	2. Juan
+	4+5=9
 
-	3. José
-	9-7=2
+	3. Juan
+	4-4= E
 
-	4. Carolina
-	6/3=2.0
+	4. José
+	7/9=0.7777777777777778
 
-	5. Carolina
-	2*3=6
+	5. Juan
+	4*4=16
 
 Lote 2
-	6. José
-	1-3=-2
+	6. Juan
+	9/1=9.0
 
-	7. José
-	7*4=28
+	7. Carolina
+	2-1=1
 
-	8. Carolina
-	6-5=1
-
-	9. Carolina
-	8+4=12
+	8. José
+	8/6=1.3333333333333333
 
 	10. Carlos
-	2-5=-3
+	2*1=2
+
+	9. Carolina
+	6/5=1.2
 
 Lote 3
-	11. Carlos
-	5+7=12
+	11. Carolina
+	7/7=1.0
 
 	12. Carolina
-	3*2=6
+	3-8=-5
 
 
